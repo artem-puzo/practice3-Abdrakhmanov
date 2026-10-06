@@ -5,21 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Панель управления — Практическая №3</title>
 
-  <!-- Подключение Bootstrap 5 CSS (CDN) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   
-  <!-- Собственные стили -->
   <link rel="stylesheet" href="css/custom.css">
 </head>
 <body class="bg-light">
 
-  <!-- Навигационная панель (Navbar) -->
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <a class="navbar-brand fw-bold" href="#">АдминПанель</a>
         
-        <!-- Кнопка-гамбургер для мобильных устройств -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,18 +28,14 @@
             <li class="nav-item">
               <a class="nav-link" href="#activity">Активность</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#reports">Отчеты</a>
-            </li>
           </ul>
           
-          <!-- Дополнительные действия в шапке -->
           <div class="d-flex align-items-center gap-2">
             <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#infoOffcanvas">
               Справка
             </button>
             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#addRecordModal">
-              + Добавить
+              + Добавить запись
             </button>
           </div>
         </div>
@@ -51,35 +43,123 @@
     </nav>
   </header>
 
-  <!-- Основной контент панели -->
   <main class="container py-4">
     
-    <!-- Заголовок страницы -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h1 class="h3 mb-0">Панель показателей</h1>
-        <p class="text-muted small mb-0">Мониторинг ключевых метрик и активности</p>
+        <h1 class="h3 mb-0">Мониторинг системы</h1>
+        <p class="text-muted small mb-0">Ключевые показатели и данные активности</p>
       </div>
     </div>
 
-    <!-- Секция карточек (заполним на 2 этапе) -->
     <section id="dashboard" class="mb-4">
+      <h2 class="h5 mb-3">Показатели</h2>
       <div class="row g-3" id="statsCardsContainer">
-        <!-- Карточки показателей будут здесь -->
+            
       </div>
     </section>
 
-    <!-- Секция таблицы активности (заполним на 2 этапе) -->
     <section id="activity" class="mb-4">
-      <!-- Таблица будет здесь -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <h2 class="h5 mb-0">Журнал активности</h2>
+          <span class="badge bg-secondary" id="activityCount">Записей: 0</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Пользователь</th>
+                  <th scope="col">Действие</th>
+                  <th scope="col">Время</th>
+                  <th scope="col">Статус</th>
+                </tr>
+              </thead>
+              <tbody id="activityTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
 
   </main>
 
-  <!-- Подключение Bootstrap 5 JS Bundle (включает Popper.js) -->
+  <div class="modal fade" id="addRecordModal" tabindex="-1" aria-labelledby="addRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addRecordModalLabel">Новое действие</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form id="addRecordForm" novalidate>
+          <div class="modal-body">
+            
+            <div class="mb-3">
+              <label for="userNameInput" class="form-label">Имя пользователя</label>
+              <input type="text" class="form-control" id="userNameInput" placeholder="Иван Иванов" required>
+              <div class="invalid-feedback">Пожалуйста, укажите имя пользователя.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="userEmailInput" class="form-label">Email пользователя</label>
+              <input type="email" class="form-control" id="userEmailInput" placeholder="user@example.com" required>
+              <div class="invalid-feedback" id="emailFeedback">Укажите корректный email адрес.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="actionSelect" class="form-label">Тип действия</label>
+              <select class="form-select" id="actionSelect" required>
+                <option value="" selected disabled>Выберите действие...</option>
+                <option value="Вход в систему">Вход в систему</option>
+                <option value="Обновление профиля">Обновление профиля</option>
+                <option value="Выгрузка отчета">Выгрузка отчета</option>
+              </select>
+              <div class="invalid-feedback">Выберите тип действия из списка.</div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-primary" id="saveRecordBtn">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="infoOffcanvas" aria-labelledby="infoOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="infoOffcanvasLabel">Справка и справка по системе</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p>Данная панель позволяет отслеживать текущие метрики и активность пользователей в реальном времени.</p>
+      <hr>
+      <h6>Источники данных:</h6>
+      <ul>
+        <li><code>dashboard.json</code> — карточки показателей</li>
+        <li><code>notifications.json</code> — логи и уведомления</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto" id="toastTitle">Уведомление</strong>
+        <small class="text-muted" id="toastTime">только что</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+      </div>
+      <div class="toast-body" id="toastBody">
+        Действие успешно выполнено.
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- Собственный скрипт -->
   <script src="js/app.js"></script>
 </body>
 </html>
