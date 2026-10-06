@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLiveValidation();
 });
 
-// 1. Загрузка карточек и строк таблицы из dashboard.json
+
 async function loadDashboardData() {
   const cardsContainer = document.getElementById('statsCardsContainer');
   const tableBody = document.getElementById('activityTableBody');
@@ -17,7 +17,6 @@ async function loadDashboardData() {
     
     const data = await response.json();
 
-    // 1.1 Отрисовка метрик
     if (data.metrics && cardsContainer) {
       cardsContainer.innerHTML = '';
       data.metrics.forEach(item => {
@@ -36,7 +35,6 @@ async function loadDashboardData() {
       });
     }
 
-    // 1.2 Отрисовка строк таблицы из JSON
     if (data.rows && tableBody) {
       tableBody.innerHTML = '';
       data.rows.forEach(row => {
@@ -52,10 +50,9 @@ async function loadDashboardData() {
   }
 }
 
-// 2. Загрузка уведомлений из notifications.json
 async function loadInitialNotifications() {
   try {
-    const response = await fetch('data/notifications.json');
+    const response = await fetch('dataset/notifications.json');
     if (!response.ok) return;
 
     const notifications = await response.json();
@@ -70,7 +67,6 @@ async function loadInitialNotifications() {
   }
 }
 
-// Вспомогательная функция показа Toast через Bootstrap API
 function showToast(title, message, time = 'только что') {
   const toastEl = document.getElementById('liveToast');
   if (!toastEl) return;
@@ -83,7 +79,6 @@ function showToast(title, message, time = 'только что') {
   toastInstance.show();
 }
 
-// 3. Вставка строки в таблицу
 function appendTableRow(id, userName, action, status = 'Готово') {
   const tbody = document.getElementById('activityTableBody');
   const countBadge = document.getElementById('activityCount');
@@ -92,7 +87,6 @@ function appendTableRow(id, userName, action, status = 'Готово') {
   const newRow = document.createElement('tr');
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Динамический цвет бейджа в зависимости от статуса из JSON
   let statusBadgeClass = 'bg-secondary';
   if (status === 'Готово') statusBadgeClass = 'bg-success';
   else if (status === 'В работе') statusBadgeClass = 'bg-warning text-dark';
@@ -106,7 +100,6 @@ function appendTableRow(id, userName, action, status = 'Готово') {
     <td><span class="badge ${statusBadgeClass}">${status}</span></td>
   `;
 
-  // Обработчик событий: клик по строке таблицы
   newRow.addEventListener('click', () => {
     showToast('Детали записи', `Выбрана запись #${id}: ${action} [Статус: ${status}]`);
   });
@@ -118,7 +111,6 @@ function appendTableRow(id, userName, action, status = 'Готово') {
   }
 }
 
-// 4. Валидация и отправка формы
 function setupFormValidationAndSubmit() {
   const form = document.getElementById('addRecordForm');
   if (!form) return;
@@ -133,7 +125,6 @@ function setupFormValidationAndSubmit() {
 
     let isValid = true;
 
-    // Валидация Имени
     if (!nameInput.value.trim()) {
       nameInput.classList.add('is-invalid');
       nameInput.classList.remove('is-valid');
@@ -143,7 +134,6 @@ function setupFormValidationAndSubmit() {
       nameInput.classList.add('is-valid');
     }
 
-    // Валидация Email
     if (!validateEmail(emailInput.value)) {
       emailInput.classList.add('is-invalid');
       emailInput.classList.remove('is-valid');
@@ -153,7 +143,6 @@ function setupFormValidationAndSubmit() {
       emailInput.classList.add('is-valid');
     }
 
-    // Валидация Выбора действия
     if (!actionSelect.value) {
       actionSelect.classList.add('is-invalid');
       actionSelect.classList.remove('is-valid');
@@ -165,7 +154,6 @@ function setupFormValidationAndSubmit() {
 
     if (!isValid) return;
 
-    // Генерация следующего ID для новой строки
     const tbody = document.getElementById('activityTableBody');
     const newId = (tbody ? tbody.children.length : 0) + 1;
 
@@ -176,7 +164,6 @@ function setupFormValidationAndSubmit() {
     const modalInstance = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
     modalInstance.hide();
 
-    // Сброс формы
     form.reset();
     [nameInput, emailInput, actionSelect].forEach(el => el.classList.remove('is-valid', 'is-invalid'));
 
@@ -184,7 +171,6 @@ function setupFormValidationAndSubmit() {
   });
 }
 
-// 5. Живая валидация Email
 function setupLiveValidation() {
   const emailInput = document.getElementById('userEmailInput');
   if (!emailInput) return;
